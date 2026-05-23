@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2°PD</title>
+<title>2°PD FC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -172,6 +172,13 @@ nav{
 .bp-pos{font-size:0.6rem;color:var(--text-muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:'Space Mono',monospace;}
 .btn-clear{flex:1;padding:9px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;font-family:'Barlow Condensed',sans-serif;}
 .btn-clear:hover{border-color:var(--loss);color:var(--loss);}
+.players-count-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+.count-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Space Mono',monospace;white-space:nowrap;}
+.count-controls{display:flex;align-items:center;gap:0;border:1px solid var(--border2);border-radius:8px;overflow:hidden;flex-shrink:0;}
+.count-btn{width:32px;height:32px;background:var(--ink3);border:none;color:var(--purple-lite);font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;justify-content:center;line-height:1;}
+.count-btn:hover{background:var(--purple);color:#fff;}
+.count-val{min-width:36px;height:32px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.25rem;color:var(--neon);background:rgba(123,47,255,0.1);border-left:1px solid var(--border2);border-right:1px solid var(--border2);letter-spacing:0.05em;}
+.count-hint{font-size:0.6rem;color:var(--text-muted);font-family:'Space Mono',monospace;letter-spacing:0.06em;opacity:0.7;}
 
 /* MATCHES */
 .matches-list{display:flex;flex-direction:column;gap:10px;}
@@ -252,7 +259,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
 <nav>
   <a href="#" class="nav-logo">
     <img src="logo.png" alt="2°PD FC">
-    <span>2°PD</span>
+    <span>2° PD FC</span>
   </a>
   <ul class="nav-links">
     <li><a href="#elenco">Elenco</a></li>
@@ -271,9 +278,10 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
 </div>
 
 <div class="hero">
+  <p class="hero-eyebrow">COTIL · Futebol de Várzea · Fundado em 2024</p>
   <img class="hero-crest" src="logo.png" alt="2°PD FC">
-  <h1>2°PD</h1>
-  <p class="hero-sub">Temporada 2026</p>
+  <h1>2° P D</h1>
+  <p class="hero-sub">Unidos pelo Vestibulinho · Temporada 2026</p>
   <div class="hero-divider"></div>
   <div class="hero-stats" id="hero-stats"></div>
 </div>
@@ -315,9 +323,11 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
         <img src="camisa1.png" alt="Camisa I" onerror="this.parentNode.innerHTML='<div class=\'kit-img-placeholder\'><div class=\'kit-ph-icon\'>👕</div><div class=\'kit-ph-label\'>camisa1.png</div></div>'">
       </div>
       <div class="kit-name">Camisa I</div>
+      <div class="kit-desc">Uniforme principal 2026. Roxo profundo com detalhes neon — identidade que intimida.</div>
       <div class="kit-colors">
-        <div class="kit-color-dot" style="background:#000000"></div>
+        <div class="kit-color-dot" style="background:#1a0a40"></div>
         <div class="kit-color-dot" style="background:#7b2fff"></div>
+        <div class="kit-color-dot" style="background:#c946ff"></div>
       </div>
     </div>
     <div class="kit-card reveal-right">
@@ -326,9 +336,11 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
         <img src="camisa2.png" alt="Camisa II" onerror="this.parentNode.innerHTML='<div class=\'kit-img-placeholder\'><div class=\'kit-ph-icon\'>👕</div><div class=\'kit-ph-label\'>camisa2.png</div></div>'">
       </div>
       <div class="kit-name">Camisa II</div>
+      <div class="kit-desc">Uniforme alternativo 2026. Preto absoluto com contornos roxo neon — elegância das trevas.</div>
       <div class="kit-colors">
-        <div class="kit-color-dot" style="background:#ffffff"></div>
+        <div class="kit-color-dot" style="background:#080810"></div>
         <div class="kit-color-dot" style="background:#7b2fff"></div>
+        <div class="kit-color-dot" style="background:#c946ff"></div>
       </div>
     </div>
   </div>
@@ -362,6 +374,15 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
         <button class="form-btn" onclick="applyFormation('3-5-2')">3-5-2</button>
         <button class="form-btn" onclick="applyFormation('5-3-2')">5-3-2</button>
         <button class="form-btn" onclick="applyFormation('4-2-3-1')">4-2-3-1</button>
+      </div>
+      <div class="players-count-bar">
+        <span class="count-label">Jogadores em campo:</span>
+        <div class="count-controls">
+          <button class="count-btn" onclick="changeSlotCount(-1)">−</button>
+          <span class="count-val" id="slot-count-val">11</span>
+          <button class="count-btn" onclick="changeSlotCount(1)">+</button>
+        </div>
+        <span class="count-hint">Arraste para o campo · Clique no slot para remover</span>
       </div>
       <div class="field-wrap" id="field-wrap">
         <svg class="field-svg-bg" viewBox="0 0 300 450" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
@@ -435,8 +456,8 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
 
 <footer>
   <img class="footer-logo" src="logo.png" alt="2°PD FC" onerror="this.style.display='none'">
-  <div class="footer-name">2° PD</div>
-  <div class="footer-sub">COTIL</div>
+  <div class="footer-name">2° PD FC</div>
+  <div class="footer-sub">COTIL · Unidos pelo Vestibulinho · Desde 2024</div>
 </footer>
 
 <script>
@@ -446,6 +467,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
 const NEWS_ITEMS = [
   "COCA CUP se aproxima — 2°PD busca a glória eterna no Intercurso do COTIL",
   "Maior rival 3°GEO aguarda na fase de grupos — a rivalidade mais acirrada do COTIL",
+  "Unidos pelo vestibulinho do final de 2024, o 2°PD está mais forte do que nunca",
   "Vitória épica: 2°PD 2x0 3°GEO — a virada que a galera não esperava",
   "Sequência positiva em 2026 mostra evolução tática do elenco",
   "Jão lidera o grupo com braçadeira de capitão e presença em campo",
@@ -470,7 +492,7 @@ const PLAYERS = [
 ];
 
 const COACH = {
-  name: "Luigi B Frigo",
+  name: "A Definir",
   since: "Temporada 2026",
   photo: "tecnico.png",
   bio: "O 2°PD, nascido no vestibulinho do final de 2024 no COTIL, busca um líder tático para conduzir o elenco rumo à glória eterna no Intercurso. A comissão técnica trabalha para aumentar o entrosamento, a conexão e a confiança do grupo para o grande campeonato.",
@@ -715,6 +737,9 @@ document.getElementById('bars').innerHTML=[
   </div>`).join('');
 
 /* ════ ESCALAÇÃO TÁTICA ════ */
+/* ════ ESCALAÇÃO TÁTICA — SLOTS LIVRES ════ */
+
+// Formações base: definem posições relativas dos 11 slots
 const FORMATIONS={
   "4-3-3":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:16,y:72,label:"LD"},{pos:"DEF",x:38,y:74,label:"ZE"},{pos:"DEF",x:62,y:74,label:"ZD"},{pos:"DEF",x:84,y:72,label:"LE"},{pos:"MID",x:24,y:53,label:"MC"},{pos:"MID",x:50,y:50,label:"MC"},{pos:"MID",x:76,y:53,label:"MC"},{pos:"ATT",x:16,y:28,label:"AE"},{pos:"ATT",x:50,y:24,label:"CA"},{pos:"ATT",x:84,y:28,label:"AD"}]},
   "4-4-2":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:16,y:72,label:"LD"},{pos:"DEF",x:38,y:74,label:"ZE"},{pos:"DEF",x:62,y:74,label:"ZD"},{pos:"DEF",x:84,y:72,label:"LE"},{pos:"MID",x:16,y:50,label:"MD"},{pos:"MID",x:38,y:52,label:"MC"},{pos:"MID",x:62,y:52,label:"MC"},{pos:"MID",x:84,y:50,label:"ME"},{pos:"ATT",x:36,y:26,label:"CA"},{pos:"ATT",x:64,y:26,label:"CA"}]},
@@ -722,9 +747,63 @@ const FORMATIONS={
   "5-3-2":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:12,y:70,label:"AE"},{pos:"DEF",x:30,y:76,label:"ZE"},{pos:"DEF",x:50,y:78,label:"ZC"},{pos:"DEF",x:70,y:76,label:"ZD"},{pos:"DEF",x:88,y:70,label:"AD"},{pos:"MID",x:26,y:52,label:"MC"},{pos:"MID",x:50,y:50,label:"MC"},{pos:"MID",x:74,y:52,label:"MC"},{pos:"ATT",x:36,y:26,label:"CA"},{pos:"ATT",x:64,y:26,label:"CA"}]},
   "4-2-3-1":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:16,y:74,label:"LD"},{pos:"DEF",x:38,y:76,label:"ZE"},{pos:"DEF",x:62,y:76,label:"ZD"},{pos:"DEF",x:84,y:74,label:"LE"},{pos:"MID",x:36,y:58,label:"VOL"},{pos:"MID",x:64,y:58,label:"VOL"},{pos:"MID",x:16,y:38,label:"AE"},{pos:"MID",x:50,y:36,label:"MAI"},{pos:"MID",x:84,y:38,label:"AD"},{pos:"ATT",x:50,y:20,label:"CA"}]},
 };
+
+// Pool de posições extras para quando slot count > 11
+// Gerado automaticamente em grade
+function extraSlotPos(index){
+  // posições extras distribuídas em 3 linhas
+  const extras=[
+    {x:50,y:12,label:"EX"},{x:25,y:12,label:"EX"},{x:75,y:12,label:"EX"},
+    {x:35,y:40,label:"EX"},{x:65,y:40,label:"EX"},{x:15,y:60,label:"EX"},
+    {x:85,y:60,label:"EX"},{x:50,y:62,label:"EX"},{x:25,y:85,label:"EX"},
+  ];
+  return extras[index] || {x:50+(index%3-1)*20,y:15+Math.floor(index/3)*15,label:"EX"};
+}
+
+let currentFormationKey='4-3-3';
+let currentSlotCount=11;
 let currentSlots=[];
 let draggedPlayerId=null;
 let dragSource=null;
+
+function buildSlots(key, count){
+  const base=FORMATIONS[key]?.slots||FORMATIONS["4-3-3"].slots;
+  let slots=[];
+  if(count<=11){
+    // Pega os primeiros `count` slots da formação
+    slots=base.slice(0,count).map(s=>({...s,playerId:null}));
+  } else {
+    // 11 da formação + extras
+    slots=base.map(s=>({...s,playerId:null}));
+    for(let i=0;i<count-11;i++){
+      const ep=extraSlotPos(i);
+      slots.push({pos:"EX",x:ep.x,y:ep.y,label:ep.label,playerId:null});
+    }
+  }
+  return slots;
+}
+
+function applyFormation(key){
+  currentFormationKey=key;
+  document.querySelectorAll('.form-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===key));
+  // Preserva jogadores já alocados dentro do novo limite
+  const prev=currentSlots.map(s=>s.playerId);
+  currentSlots=buildSlots(key,currentSlotCount);
+  currentSlots=currentSlots.map((s,i)=>({...s,playerId:prev[i]||null}));
+  renderField();renderBench();
+}
+
+function changeSlotCount(delta){
+  const next=currentSlotCount+delta;
+  if(next<1||next>PLAYERS.length)return;
+  currentSlotCount=next;
+  document.getElementById('slot-count-val').textContent=currentSlotCount;
+  // Ao reduzir, slots removidos voltam ao banco
+  const prev=currentSlots.map(s=>s.playerId);
+  currentSlots=buildSlots(currentFormationKey,currentSlotCount);
+  currentSlots=currentSlots.map((s,i)=>({...s,playerId:prev[i]||null}));
+  renderField();renderBench();
+}
 
 function renderBench(){
   const onField=currentSlots.filter(s=>s.playerId!=null).map(s=>s.playerId);
@@ -741,6 +820,7 @@ function renderBench(){
       </div>
     </div>`).join('');
 }
+
 function renderField(){
   document.getElementById('field-slots').innerHTML=currentSlots.map((s,i)=>{
     const player=s.playerId!=null?PLAYERS.find(p=>p.number===s.playerId):null;
@@ -756,13 +836,7 @@ function renderField(){
       </div></div>`;
   }).join('');
 }
-function applyFormation(key){
-  document.querySelectorAll('.form-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===key));
-  const f=FORMATIONS[key];if(!f)return;
-  const prev=currentSlots.map(s=>s.playerId);
-  currentSlots=f.slots.map((s,i)=>({...s,playerId:prev[i]||null}));
-  renderField();renderBench();
-}
+
 function removeFromSlot(sid){currentSlots[sid].playerId=null;renderField();renderBench();}
 function clearField(){currentSlots=currentSlots.map(s=>({...s,playerId:null}));renderField();renderBench();}
 function onBenchDragStart(e,pid){draggedPlayerId=pid;dragSource='bench';e.dataTransfer.effectAllowed='move';setTimeout(()=>{document.querySelector(`.bench-player[data-pid="${pid}"]`)?.classList.add('dragging');},0);}
