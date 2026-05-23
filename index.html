@@ -737,72 +737,184 @@ document.getElementById('bars').innerHTML=[
   </div>`).join('');
 
 /* ════ ESCALAÇÃO TÁTICA ════ */
-/* ════ ESCALAÇÃO TÁTICA — SLOTS LIVRES ════ */
+/* ════ ESCALAÇÃO TÁTICA — SLOTS DINÂMICOS ════ */
 
-// Formações base: definem posições relativas dos 11 slots
-const FORMATIONS={
-  "4-3-3":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:16,y:72,label:"LD"},{pos:"DEF",x:38,y:74,label:"ZE"},{pos:"DEF",x:62,y:74,label:"ZD"},{pos:"DEF",x:84,y:72,label:"LE"},{pos:"MID",x:24,y:53,label:"MC"},{pos:"MID",x:50,y:50,label:"MC"},{pos:"MID",x:76,y:53,label:"MC"},{pos:"ATT",x:16,y:28,label:"AE"},{pos:"ATT",x:50,y:24,label:"CA"},{pos:"ATT",x:84,y:28,label:"AD"}]},
-  "4-4-2":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:16,y:72,label:"LD"},{pos:"DEF",x:38,y:74,label:"ZE"},{pos:"DEF",x:62,y:74,label:"ZD"},{pos:"DEF",x:84,y:72,label:"LE"},{pos:"MID",x:16,y:50,label:"MD"},{pos:"MID",x:38,y:52,label:"MC"},{pos:"MID",x:62,y:52,label:"MC"},{pos:"MID",x:84,y:50,label:"ME"},{pos:"ATT",x:36,y:26,label:"CA"},{pos:"ATT",x:64,y:26,label:"CA"}]},
-  "3-5-2":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:28,y:74,label:"ZE"},{pos:"DEF",x:50,y:76,label:"ZC"},{pos:"DEF",x:72,y:74,label:"ZD"},{pos:"MID",x:14,y:54,label:"AE"},{pos:"MID",x:32,y:52,label:"MC"},{pos:"MID",x:50,y:50,label:"MC"},{pos:"MID",x:68,y:52,label:"MC"},{pos:"MID",x:86,y:54,label:"AD"},{pos:"ATT",x:36,y:26,label:"CA"},{pos:"ATT",x:64,y:26,label:"CA"}]},
-  "5-3-2":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:12,y:70,label:"AE"},{pos:"DEF",x:30,y:76,label:"ZE"},{pos:"DEF",x:50,y:78,label:"ZC"},{pos:"DEF",x:70,y:76,label:"ZD"},{pos:"DEF",x:88,y:70,label:"AD"},{pos:"MID",x:26,y:52,label:"MC"},{pos:"MID",x:50,y:50,label:"MC"},{pos:"MID",x:74,y:52,label:"MC"},{pos:"ATT",x:36,y:26,label:"CA"},{pos:"ATT",x:64,y:26,label:"CA"}]},
-  "4-2-3-1":{slots:[{pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:16,y:74,label:"LD"},{pos:"DEF",x:38,y:76,label:"ZE"},{pos:"DEF",x:62,y:76,label:"ZD"},{pos:"DEF",x:84,y:74,label:"LE"},{pos:"MID",x:36,y:58,label:"VOL"},{pos:"MID",x:64,y:58,label:"VOL"},{pos:"MID",x:16,y:38,label:"AE"},{pos:"MID",x:50,y:36,label:"MAI"},{pos:"MID",x:84,y:38,label:"AD"},{pos:"ATT",x:50,y:20,label:"CA"}]},
+/*
+  LÓGICA DE POSICIONAMENTO DINÂMICO
+  ----------------------------------
+  Cada formação define "linhas" (GK, DEF, MID, ATT).
+  Ao mudar o número de jogadores, redistribuímos proporcionalmente
+  as linhas e recalculamos as posições X/Y de cada jogador no campo.
+  Assim, com 7 jogadores o atacante continua na frente, o goleiro atrás, etc.
+*/
+
+// Formações: array de linhas. Cada linha tem { pos, label, count }
+// count = número de jogadores nessa linha com 11 jogadores (base)
+const FORMATION_TEMPLATES = {
+  "4-3-3": [
+    {pos:"GK",  label:"GK",  count:1},
+    {pos:"DEF", label:"DEF", count:4},
+    {pos:"MID", label:"MC",  count:3},
+    {pos:"ATT", label:"ATT", count:3},
+  ],
+  "4-4-2": [
+    {pos:"GK",  label:"GK",  count:1},
+    {pos:"DEF", label:"DEF", count:4},
+    {pos:"MID", label:"MC",  count:4},
+    {pos:"ATT", label:"CA",  count:2},
+  ],
+  "3-5-2": [
+    {pos:"GK",  label:"GK",  count:1},
+    {pos:"DEF", label:"ZAG", count:3},
+    {pos:"MID", label:"MC",  count:5},
+    {pos:"ATT", label:"CA",  count:2},
+  ],
+  "5-3-2": [
+    {pos:"GK",  label:"GK",  count:1},
+    {pos:"DEF", label:"DEF", count:5},
+    {pos:"MID", label:"MC",  count:3},
+    {pos:"ATT", label:"CA",  count:2},
+  ],
+  "4-2-3-1": [
+    {pos:"GK",  label:"GK",  count:1},
+    {pos:"DEF", label:"DEF", count:4},
+    {pos:"MID", label:"VOL", count:2},
+    {pos:"MID", label:"MAI", count:3},
+    {pos:"ATT", label:"CA",  count:1},
+  ],
 };
 
-// Pool de posições extras para quando slot count > 11
-// Gerado automaticamente em grade
-function extraSlotPos(index){
-  // posições extras distribuídas em 3 linhas
-  const extras=[
-    {x:50,y:12,label:"EX"},{x:25,y:12,label:"EX"},{x:75,y:12,label:"EX"},
-    {x:35,y:40,label:"EX"},{x:65,y:40,label:"EX"},{x:15,y:60,label:"EX"},
-    {x:85,y:60,label:"EX"},{x:50,y:62,label:"EX"},{x:25,y:85,label:"EX"},
-  ];
-  return extras[index] || {x:50+(index%3-1)*20,y:15+Math.floor(index/3)*15,label:"EX"};
-}
+// Posições Y fixas por "profundidade" de linha (de baixo para cima no campo)
+// GK=fundo, ATT=frente — sempre mantidos nas extremidades corretas
+const LINE_Y = {
+  GK:  88,
+  DEF: 73,
+  MID: 52,
+  ATT: 26,
+};
 
-let currentFormationKey='4-3-3';
-let currentSlotCount=11;
-let currentSlots=[];
-let draggedPlayerId=null;
-let dragSource=null;
+/*
+  buildSlots(formationKey, totalCount)
+  ------------------------------------
+  Distribui `totalCount` jogadores pelas linhas da formação,
+  mantendo as proporções relativas. GK sempre ocupa 1 slot se count >= 1.
+  As demais linhas recebem jogadores proporcionalmente.
+  Recalcula X de cada jogador na linha para distribuí-los horizontalmente.
+*/
+function buildSlots(key, totalCount) {
+  const template = FORMATION_TEMPLATES[key] || FORMATION_TEMPLATES["4-3-3"];
 
-function buildSlots(key, count){
-  const base=FORMATIONS[key]?.slots||FORMATIONS["4-3-3"].slots;
-  let slots=[];
-  if(count<=11){
-    // Pega os primeiros `count` slots da formação
-    slots=base.slice(0,count).map(s=>({...s,playerId:null}));
-  } else {
-    // 11 da formação + extras
-    slots=base.map(s=>({...s,playerId:null}));
-    for(let i=0;i<count-11;i++){
-      const ep=extraSlotPos(i);
-      slots.push({pos:"EX",x:ep.x,y:ep.y,label:ep.label,playerId:null});
-    }
+  // Separar GK das demais linhas
+  const gkLines    = template.filter(l => l.pos === "GK");
+  const fieldLines = template.filter(l => l.pos !== "GK");
+
+  // Total de jogadores de campo sem GK na formação base
+  const baseFieldTotal = fieldLines.reduce((s, l) => s + l.count, 0);
+  // Total base com GK
+  const baseTotal = gkLines.reduce((s,l)=>s+l.count,0) + baseFieldTotal;
+
+  // Quantos GKs e quantos de campo temos com `totalCount`
+  const gkCount    = totalCount >= 1 ? 1 : 0;
+  const fieldCount = totalCount - gkCount;
+
+  // Distribuir fieldCount pelas linhas de campo proporcionalmente
+  // Usar os pesos da formação base
+  let lineCounts = fieldLines.map(l => ({
+    ...l,
+    allocated: 0,
+    weight: l.count / baseFieldTotal,
+  }));
+
+  // Distribuição proporcional com arredondamento (método Largest Remainder)
+  if (fieldCount > 0 && baseFieldTotal > 0) {
+    let exact = lineCounts.map(l => l.weight * fieldCount);
+    let floors = exact.map(v => Math.floor(v));
+    let remainder = fieldCount - floors.reduce((a,b)=>a+b,0);
+    let fracs = exact.map((v,i) => ({i, f: v - floors[i]}));
+    fracs.sort((a,b) => b.f - a.f);
+    for (let k = 0; k < remainder; k++) floors[fracs[k].i]++;
+    lineCounts = lineCounts.map((l,i) => ({...l, allocated: floors[i]}));
   }
+
+  // Montar slots: primeiro GK, depois linhas de campo
+  let slots = [];
+
+  // GK
+  if (gkCount > 0) {
+    slots.push({ pos:"GK", x:50, y:LINE_Y.GK, label:"GK", playerId:null });
+  }
+
+  // Linhas de campo — calcular Y dinâmico baseado em quantas linhas ativas existem
+  const activeLines = lineCounts.filter(l => l.allocated > 0);
+  const nLines = activeLines.length;
+
+  // Distribuir Y das linhas no espaço entre GK e ATT
+  // Com 1 linha: fica no meio. Com 3 linhas: DEF/MID/ATT bem distribuídos
+  const yTop    = LINE_Y.ATT;  // mais para cima = menor Y = mais perto do gol adversário
+  const yBottom = LINE_Y.DEF;  // mais para baixo = maior Y
+
+  activeLines.forEach((line, lineIdx) => {
+    // Y: distribui linearmente de yBottom até yTop
+    let yPos;
+    if (nLines === 1) {
+      yPos = (yTop + yBottom) / 2;
+    } else {
+      // lineIdx 0 = linha mais defensiva (maior Y), nLines-1 = linha mais ofensiva (menor Y)
+      yPos = yBottom - (lineIdx / (nLines - 1)) * (yBottom - yTop);
+    }
+
+    const n = line.allocated;
+    // Distribuir X: centralizado, com espaçamento uniforme
+    for (let j = 0; j < n; j++) {
+      let xPos;
+      if (n === 1) {
+        xPos = 50;
+      } else {
+        // Margem lateral de 10% de cada lado
+        const margin = 10;
+        xPos = margin + (j / (n - 1)) * (100 - 2 * margin);
+      }
+      slots.push({
+        pos:      line.pos,
+        x:        Math.round(xPos),
+        y:        Math.round(yPos),
+        label:    line.label,
+        playerId: null,
+      });
+    }
+  });
+
   return slots;
 }
 
-function applyFormation(key){
-  currentFormationKey=key;
-  document.querySelectorAll('.form-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===key));
-  // Preserva jogadores já alocados dentro do novo limite
-  const prev=currentSlots.map(s=>s.playerId);
-  currentSlots=buildSlots(key,currentSlotCount);
-  currentSlots=currentSlots.map((s,i)=>({...s,playerId:prev[i]||null}));
-  renderField();renderBench();
+let currentFormationKey = '4-3-3';
+let currentSlotCount    = 11;
+let currentSlots        = [];
+let draggedPlayerId     = null;
+let dragSource          = null;
+
+function applyFormation(key) {
+  currentFormationKey = key;
+  document.querySelectorAll('.form-btn').forEach(b =>
+    b.classList.toggle('active', b.textContent.trim() === key)
+  );
+  const prev = currentSlots.map(s => s.playerId);
+  currentSlots = buildSlots(key, currentSlotCount);
+  currentSlots = currentSlots.map((s, i) => ({...s, playerId: prev[i] || null}));
+  renderField();
+  renderBench();
 }
 
-function changeSlotCount(delta){
-  const next=currentSlotCount+delta;
-  if(next<1||next>PLAYERS.length)return;
-  currentSlotCount=next;
-  document.getElementById('slot-count-val').textContent=currentSlotCount;
-  // Ao reduzir, slots removidos voltam ao banco
-  const prev=currentSlots.map(s=>s.playerId);
-  currentSlots=buildSlots(currentFormationKey,currentSlotCount);
-  currentSlots=currentSlots.map((s,i)=>({...s,playerId:prev[i]||null}));
-  renderField();renderBench();
+function changeSlotCount(delta) {
+  const next = currentSlotCount + delta;
+  if (next < 1 || next > PLAYERS.length) return;
+  currentSlotCount = next;
+  document.getElementById('slot-count-val').textContent = currentSlotCount;
+  const prev = currentSlots.map(s => s.playerId);
+  currentSlots = buildSlots(currentFormationKey, currentSlotCount);
+  currentSlots = currentSlots.map((s, i) => ({...s, playerId: prev[i] || null}));
+  renderField();
+  renderBench();
 }
 
 function renderBench(){
