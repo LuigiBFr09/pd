@@ -30,15 +30,9 @@
 
 .tactics-layout{...}
 .field-wrap{...}
-#escalacao{}
+  .tool-btn{...}
+#escalacao{display:block;}
 
-
-/* ── DRAW TOOLBAR (mantido comentado, não renderizado) ── */
-/*
-.draw-toolbar{...}
-.tool-btn{...}
-.field-player{...}
-*/
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'Barlow Condensed',system-ui,sans-serif;background:var(--ink);color:var(--text);min-height:100vh;overflow-x:hidden;}
@@ -427,7 +421,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
 
 <!-- ESCALAÇÃO -->
 <div id="escalacao">
-  <!-- conteúdo de escalação aqui quando reativado -->
+  
 </div>
 
 <div class="divider"></div>
@@ -746,12 +740,6 @@ document.getElementById('bars').innerHTML=[
     <div class="bar-track"><div class="bar-fill ${b.cls}" style="width:0%" data-target="${b.pct}"></div></div>
   </div>`).join('');
 
- ════════════════════════════════════════════════════════════
-   ESCALAÇÃO TÁTICA — CÓDIGO DESATIVADO (comentado)
-   Para reativar:
-   1. Mude #escalacao { display:none } para display:block no CSS
-   2. Adicione o HTML de escalação dentro de #escalacao no HTML
-   3. Descomente este bloco inteiro
 
 const FORMATIONS = {
   "4-3-3":{ slots:[
