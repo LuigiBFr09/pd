@@ -28,14 +28,9 @@
   --wo:          #b06bff;
 }
 
-  /* ── TACTICS (COMENTADO/DESATIVADO) ── */
-/* A seção de escalação está temporariamente desativada.
-   Para reativar, remova o display:none do #escalacao
-   e descomente o bloco JavaScript de escalação no final do script.
 .tactics-layout{...}
 .field-wrap{...}
-*/
-#escalacao{display:none;}
+
 
 /* ── DRAW TOOLBAR (mantido comentado, não renderizado) ── */
 /*
@@ -750,7 +745,7 @@ document.getElementById('bars').innerHTML=[
     <div class="bar-track"><div class="bar-fill ${b.cls}" style="width:0%" data-target="${b.pct}"></div></div>
   </div>`).join('');
 
-/* ════════════════════════════════════════════════════════════
+ ════════════════════════════════════════════════════════════
    ESCALAÇÃO TÁTICA — CÓDIGO DESATIVADO (comentado)
    Para reativar:
    1. Mude #escalacao { display:none } para display:block no CSS
@@ -784,9 +779,9 @@ function onDragEnd(){...}
 function clearField(){...}
 function applyFormation(key){...}
 // Init: applyFormation('4-3-3'); setMode('move');
-════════════════════════════════════════════════════════════ */
+════════════════════════════════════════════════════════════ 
 
-/* ════ CANVAS DE DESENHO — DESATIVADO (comentado) ════
+ ════ CANVAS DE DESENHO — DESATIVADO (comentado) ════
 const canvas=document.getElementById('draw-canvas');
 const ctx=canvas.getContext('2d');
 let drawMode='move',drawColor='#ffffff',drawSize=2;
