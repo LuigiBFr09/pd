@@ -27,6 +27,22 @@
   --draw:        #f59e0b;
   --wo:          #b06bff;
 }
+
+  /* ── TACTICS (COMENTADO/DESATIVADO) ── */
+/* A seção de escalação está temporariamente desativada.
+   Para reativar, remova o display:none do #escalacao
+   e descomente o bloco JavaScript de escalação no final do script.
+.tactics-layout{...}
+.field-wrap{...}
+*/
+#escalacao{display:none;}
+
+/* ── DRAW TOOLBAR (mantido comentado, não renderizado) ── */
+/*
+.draw-toolbar{...}
+.tool-btn{...}
+.field-player{...}
+*/
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'Barlow Condensed',system-ui,sans-serif;background:var(--ink);color:var(--text);min-height:100vh;overflow-x:hidden;}
