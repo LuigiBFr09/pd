@@ -414,64 +414,8 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(123,47,255,0.18);pa
 <div class="divider"></div>
 
 <!-- ESCALAÇÃO -->
-<div class="section" id="escalacao">
-  <div class="reveal">
-    <div class="section-label">Campo Interativo</div>
-    <div class="section-title">Monte sua Escalação</div>
-  </div>
-  <div class="tactics-layout">
-    <div class="field-container reveal-left">
-      <div class="formation-bar">
-        <span>Formação:</span>
-        <button class="form-btn active" onclick="applyFormation('4-3-3')">4-3-3</button>
-        <button class="form-btn" onclick="applyFormation('4-4-2')">4-4-2</button>
-        <button class="form-btn" onclick="applyFormation('3-5-2')">3-5-2</button>
-        <button class="form-btn" onclick="applyFormation('5-3-2')">5-3-2</button>
-        <button class="form-btn" onclick="applyFormation('4-2-3-1')">4-2-3-1</button>
-      </div>
-      <div class="players-count-bar">
-        <span class="count-label">Jogadores em campo:</span>
-        <div class="count-controls">
-          <button class="count-btn" onclick="changeSlotCount(-1)">−</button>
-          <span class="count-val" id="slot-count-val">11</span>
-          <button class="count-btn" onclick="changeSlotCount(1)">+</button>
-        </div>
-        <span class="count-hint">Arraste para o campo · Clique no slot para remover</span>
-      </div>
-      <div class="field-wrap" id="field-wrap">
-        <svg class="field-svg-bg" viewBox="0 0 300 450" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-          <rect width="300" height="450" fill="#0d1f0d"/>
-          <rect x="0" y="0" width="300" height="45" fill="rgba(255,255,255,0.025)"/>
-          <rect x="0" y="90" width="300" height="45" fill="rgba(255,255,255,0.025)"/>
-          <rect x="0" y="180" width="300" height="45" fill="rgba(255,255,255,0.025)"/>
-          <rect x="0" y="270" width="300" height="45" fill="rgba(255,255,255,0.025)"/>
-          <rect x="0" y="360" width="300" height="45" fill="rgba(255,255,255,0.025)"/>
-          <rect x="8" y="8" width="284" height="434" rx="3" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
-          <line x1="8" y1="225" x2="292" y2="225" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
-          <circle cx="150" cy="225" r="45" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
-          <circle cx="150" cy="225" r="3" fill="rgba(255,255,255,0.4)"/>
-          <rect x="72" y="8" width="156" height="60" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
-          <rect x="112" y="8" width="76" height="26" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
-          <rect x="124" y="4" width="52" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
-          <circle cx="150" cy="50" r="2.5" fill="rgba(255,255,255,0.4)"/>
-          <path d="M 104 68 A 46 46 0 0 1 196 68" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
-          <rect x="72" y="382" width="156" height="60" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
-          <rect x="112" y="416" width="76" height="26" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
-          <rect x="124" y="438" width="52" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
-          <circle cx="150" cy="400" r="2.5" fill="rgba(255,255,255,0.4)"/>
-          <path d="M 104 382 A 46 46 0 0 0 196 382" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
-        </svg>
-        <div class="field-slots" id="field-slots"></div>
-      </div>
-    </div>
-    <div class="bench-panel reveal-right">
-      <div class="bench-title">Banco de Reservas</div>
-      <div class="bench-list" id="bench-list"></div>
-      <div style="display:flex;gap:8px;margin-top:4px;">
-        <button class="btn-clear" onclick="clearField()">Limpar Campo</button>
-      </div>
-    </div>
-  </div>
+<div id="escalacao">
+  <!-- conteúdo de escalação aqui quando reativado -->
 </div>
 
 <div class="divider"></div>
@@ -790,237 +734,53 @@ document.getElementById('bars').innerHTML=[
     <div class="bar-track"><div class="bar-fill ${b.cls}" style="width:0%" data-target="${b.pct}"></div></div>
   </div>`).join('');
 
-/* ════ ESCALAÇÃO TÁTICA ════ */
-/* ════ ESCALAÇÃO TÁTICA — SLOTS DINÂMICOS ════ */
+/* ════════════════════════════════════════════════════════════
+   ESCALAÇÃO TÁTICA — CÓDIGO DESATIVADO (comentado)
+   Para reativar:
+   1. Mude #escalacao { display:none } para display:block no CSS
+   2. Adicione o HTML de escalação dentro de #escalacao no HTML
+   3. Descomente este bloco inteiro
 
-/*
-  LÓGICA DE POSICIONAMENTO DINÂMICO
-  ----------------------------------
-  Cada formação define "linhas" (GK, DEF, MID, ATT).
-  Ao mudar o número de jogadores, redistribuímos proporcionalmente
-  as linhas e recalculamos as posições X/Y de cada jogador no campo.
-  Assim, com 7 jogadores o atacante continua na frente, o goleiro atrás, etc.
-*/
-
-// Formações: array de linhas. Cada linha tem { pos, label, count }
-// count = número de jogadores nessa linha com 11 jogadores (base)
-const FORMATION_TEMPLATES = {
-  "4-3-3": [
-    {pos:"GK",  label:"GK",  count:1},
-    {pos:"DEF", label:"DEF", count:4},
-    {pos:"MID", label:"MC",  count:3},
-    {pos:"ATT", label:"ATT", count:3},
-  ],
-  "4-4-2": [
-    {pos:"GK",  label:"GK",  count:1},
-    {pos:"DEF", label:"DEF", count:4},
-    {pos:"MID", label:"MC",  count:4},
-    {pos:"ATT", label:"CA",  count:2},
-  ],
-  "3-5-2": [
-    {pos:"GK",  label:"GK",  count:1},
-    {pos:"DEF", label:"ZAG", count:3},
-    {pos:"MID", label:"MC",  count:5},
-    {pos:"ATT", label:"CA",  count:2},
-  ],
-  "5-3-2": [
-    {pos:"GK",  label:"GK",  count:1},
-    {pos:"DEF", label:"DEF", count:5},
-    {pos:"MID", label:"MC",  count:3},
-    {pos:"ATT", label:"CA",  count:2},
-  ],
-  "4-2-3-1": [
-    {pos:"GK",  label:"GK",  count:1},
-    {pos:"DEF", label:"DEF", count:4},
-    {pos:"MID", label:"VOL", count:2},
-    {pos:"MID", label:"MAI", count:3},
-    {pos:"ATT", label:"CA",  count:1},
-  ],
+const FORMATIONS = {
+  "4-3-3":{ slots:[
+    {pos:"GK",x:50,y:90,label:"GK"},{pos:"DEF",x:18,y:74,label:"LD"},
+    {pos:"DEF",x:38,y:74,label:"ZE"},{pos:"DEF",x:62,y:74,label:"ZD"},
+    {pos:"DEF",x:82,y:74,label:"LE"},{pos:"MID",x:25,y:56,label:"MC"},
+    {pos:"MID",x:50,y:52,label:"MC"},{pos:"MID",x:75,y:56,label:"MC"},
+    {pos:"ATT",x:18,y:34,label:"AE"},{pos:"ATT",x:50,y:28,label:"CA"},
+    {pos:"ATT",x:82,y:34,label:"AD"},
+  ]},
+  // ... demais formações
 };
+const posClassDot={GK:'gk',DEF:'def',MID:'mid',ATT:'att'};
+let fieldSlots=[],dragPlayer=null,dragSlot=null;
 
-// Posições Y fixas por "profundidade" de linha (de baixo para cima no campo)
-// GK=fundo, ATT=frente — sempre mantidos nas extremidades corretas
-const LINE_Y = {
-  GK:  88,
-  DEF: 73,
-  MID: 52,
-  ATT: 26,
-};
+function getPlayerById(id){return PLAYERS.find(p=>p.number===id);}
+function getOnFieldIds(){return fieldSlots.filter(s=>s.playerId!==null).map(s=>s.playerId);}
+function renderBench(){...}
+function renderLineupSlots(){...}
+function removeFromSlot(id){...}
+function renderField(){...}
+function handleDropOnSlot(targetId,e){...}
+function onBenchDragStart(e,pid){...}
+function onSlotDragStart(e,sid){...}
+function onDragEnd(){...}
+function clearField(){...}
+function applyFormation(key){...}
+// Init: applyFormation('4-3-3'); setMode('move');
+════════════════════════════════════════════════════════════ */
 
-/*
-  buildSlots(formationKey, totalCount)
-  ------------------------------------
-  Distribui `totalCount` jogadores pelas linhas da formação,
-  mantendo as proporções relativas. GK sempre ocupa 1 slot se count >= 1.
-  As demais linhas recebem jogadores proporcionalmente.
-  Recalcula X de cada jogador na linha para distribuí-los horizontalmente.
-*/
-function buildSlots(key, totalCount) {
-  const template = FORMATION_TEMPLATES[key] || FORMATION_TEMPLATES["4-3-3"];
-
-  // Separar GK das demais linhas
-  const gkLines    = template.filter(l => l.pos === "GK");
-  const fieldLines = template.filter(l => l.pos !== "GK");
-
-  // Total de jogadores de campo sem GK na formação base
-  const baseFieldTotal = fieldLines.reduce((s, l) => s + l.count, 0);
-  // Total base com GK
-  const baseTotal = gkLines.reduce((s,l)=>s+l.count,0) + baseFieldTotal;
-
-  // Quantos GKs e quantos de campo temos com `totalCount`
-  const gkCount    = totalCount >= 1 ? 1 : 0;
-  const fieldCount = totalCount - gkCount;
-
-  // Distribuir fieldCount pelas linhas de campo proporcionalmente
-  // Usar os pesos da formação base
-  let lineCounts = fieldLines.map(l => ({
-    ...l,
-    allocated: 0,
-    weight: l.count / baseFieldTotal,
-  }));
-
-  // Distribuição proporcional com arredondamento (método Largest Remainder)
-  if (fieldCount > 0 && baseFieldTotal > 0) {
-    let exact = lineCounts.map(l => l.weight * fieldCount);
-    let floors = exact.map(v => Math.floor(v));
-    let remainder = fieldCount - floors.reduce((a,b)=>a+b,0);
-    let fracs = exact.map((v,i) => ({i, f: v - floors[i]}));
-    fracs.sort((a,b) => b.f - a.f);
-    for (let k = 0; k < remainder; k++) floors[fracs[k].i]++;
-    lineCounts = lineCounts.map((l,i) => ({...l, allocated: floors[i]}));
-  }
-
-  // Montar slots: primeiro GK, depois linhas de campo
-  let slots = [];
-
-  // GK
-  if (gkCount > 0) {
-    slots.push({ pos:"GK", x:50, y:LINE_Y.GK, label:"GK", playerId:null });
-  }
-
-  // Linhas de campo — calcular Y dinâmico baseado em quantas linhas ativas existem
-  const activeLines = lineCounts.filter(l => l.allocated > 0);
-  const nLines = activeLines.length;
-
-  // Distribuir Y das linhas no espaço entre GK e ATT
-  // Com 1 linha: fica no meio. Com 3 linhas: DEF/MID/ATT bem distribuídos
-  const yTop    = LINE_Y.ATT;  // mais para cima = menor Y = mais perto do gol adversário
-  const yBottom = LINE_Y.DEF;  // mais para baixo = maior Y
-
-  activeLines.forEach((line, lineIdx) => {
-    // Y: distribui linearmente de yBottom até yTop
-    let yPos;
-    if (nLines === 1) {
-      yPos = (yTop + yBottom) / 2;
-    } else {
-      // lineIdx 0 = linha mais defensiva (maior Y), nLines-1 = linha mais ofensiva (menor Y)
-      yPos = yBottom - (lineIdx / (nLines - 1)) * (yBottom - yTop);
-    }
-
-    const n = line.allocated;
-    // Distribuir X: centralizado, com espaçamento uniforme
-    for (let j = 0; j < n; j++) {
-      let xPos;
-      if (n === 1) {
-        xPos = 50;
-      } else {
-        // Margem lateral de 10% de cada lado
-        const margin = 10;
-        xPos = margin + (j / (n - 1)) * (100 - 2 * margin);
-      }
-      slots.push({
-        pos:      line.pos,
-        x:        Math.round(xPos),
-        y:        Math.round(yPos),
-        label:    line.label,
-        playerId: null,
-      });
-    }
-  });
-
-  return slots;
-}
-
-let currentFormationKey = '4-3-3';
-let currentSlotCount    = 11;
-let currentSlots        = [];
-let draggedPlayerId     = null;
-let dragSource          = null;
-
-function applyFormation(key) {
-  currentFormationKey = key;
-  document.querySelectorAll('.form-btn').forEach(b =>
-    b.classList.toggle('active', b.textContent.trim() === key)
-  );
-  const prev = currentSlots.map(s => s.playerId);
-  currentSlots = buildSlots(key, currentSlotCount);
-  currentSlots = currentSlots.map((s, i) => ({...s, playerId: prev[i] || null}));
-  renderField();
-  renderBench();
-}
-
-function changeSlotCount(delta) {
-  const next = currentSlotCount + delta;
-  if (next < 1 || next > PLAYERS.length) return;
-  currentSlotCount = next;
-  document.getElementById('slot-count-val').textContent = currentSlotCount;
-  const prev = currentSlots.map(s => s.playerId);
-  currentSlots = buildSlots(currentFormationKey, currentSlotCount);
-  currentSlots = currentSlots.map((s, i) => ({...s, playerId: prev[i] || null}));
-  renderField();
-  renderBench();
-}
-
-function renderBench(){
-  const onField=currentSlots.filter(s=>s.playerId!=null).map(s=>s.playerId);
-  document.getElementById('bench-list').innerHTML=PLAYERS.map(p=>`
-    <div class="bench-player${onField.includes(p.number)?' on-field':''}"
-         draggable="${!onField.includes(p.number)}"
-         data-pid="${p.number}"
-         ondragstart="onBenchDragStart(event,${p.number})"
-         ondragend="onDragEnd()">
-      <div class="bp-num">${p.number}</div>
-      <div class="bp-info">
-        <div class="bp-name">${p.name}</div>
-        <div class="bp-pos">${p.pos}</div>
-      </div>
-    </div>`).join('');
-}
-
-function renderField(){
-  document.getElementById('field-slots').innerHTML=currentSlots.map((s,i)=>{
-    const player=s.playerId!=null?PLAYERS.find(p=>p.number===s.playerId):null;
-    return `<div class="slot${player?' filled':''}" style="left:${s.x}%;top:${s.y}%;"
-      data-sid="${i}"
-      ondragover="onSlotDragOver(event,${i})" ondragleave="onSlotDragLeave(event,${i})"
-      ondrop="onDropSlot(event,${i})"
-      ondragstart="${player?`onSlotDragStart(event,${i})`:'return false'}"
-      draggable="${player?'true':'false'}"
-      onclick="removeFromSlot(${i})">
-      <div class="slot-inner">
-        ${player?`<div class="slot-num">${player.number}</div><div class="slot-lbl">${player.name.split(' ')[0]}</div>`:`<div class="slot-lbl">${s.label}</div>`}
-      </div></div>`;
-  }).join('');
-}
-
-function removeFromSlot(sid){currentSlots[sid].playerId=null;renderField();renderBench();}
-function clearField(){currentSlots=currentSlots.map(s=>({...s,playerId:null}));renderField();renderBench();}
-function onBenchDragStart(e,pid){draggedPlayerId=pid;dragSource='bench';e.dataTransfer.effectAllowed='move';setTimeout(()=>{document.querySelector(`.bench-player[data-pid="${pid}"]`)?.classList.add('dragging');},0);}
-function onSlotDragStart(e,sid){draggedPlayerId=currentSlots[sid].playerId;dragSource=sid;e.dataTransfer.effectAllowed='move';}
-function onSlotDragOver(e,sid){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelector(`.slot[data-sid="${sid}"]`)?.classList.add('dragover');}
-function onSlotDragLeave(e,sid){document.querySelector(`.slot[data-sid="${sid}"]`)?.classList.remove('dragover');}
-function onDropSlot(e,sid){
-  e.preventDefault();
-  document.querySelector(`.slot[data-sid="${sid}"]`)?.classList.remove('dragover');
-  if(draggedPlayerId==null)return;
-  const targetPlayer=currentSlots[sid].playerId;
-  if(dragSource==='bench'){currentSlots[sid].playerId=draggedPlayerId;}
-  else{currentSlots[sid].playerId=draggedPlayerId;currentSlots[dragSource].playerId=targetPlayer;}
-  draggedPlayerId=null;dragSource=null;
-  renderField();renderBench();
-}
-function onDragEnd(){document.querySelectorAll('.bench-player.dragging').forEach(el=>el.classList.remove('dragging'));draggedPlayerId=null;dragSource=null;}
-applyFormation('4-3-3');
+/* ════ CANVAS DE DESENHO — DESATIVADO (comentado) ════
+const canvas=document.getElementById('draw-canvas');
+const ctx=canvas.getContext('2d');
+let drawMode='move',drawColor='#ffffff',drawSize=2;
+let isDrawing=false,drawStart={x:0,y:0},drawHistory=[];
+function setMode(mode){...}
+function setColor(c){...}
+function setSize(s){...}
+function saveSnapshot(){...}
+function undoDraw(){...}
+// Canvas events: mousedown, mousemove, mouseup, mouseleave, touch
 
 /* ════ SCROLL REVEAL ════ */
 const observer=new IntersectionObserver(entries=>{
